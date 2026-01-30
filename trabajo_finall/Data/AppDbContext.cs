@@ -10,6 +10,7 @@ namespace trabajo_finall.Data
         {
         }
 
-        public DbSet<Usuario> Usuarios { get; set; }
+        public DbSet<Venta> Ventas { get; set; }
+        public DbSet<Producto> Productos { get; set; }
     }
 }

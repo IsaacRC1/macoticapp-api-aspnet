@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using trabajo_finall.Data;
@@ -11,9 +12,11 @@ using trabajo_finall.Data;
 namespace trabajo_finall.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260129212149_AddingModels")]
+    partial class AddingModels
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -30,10 +33,9 @@ namespace trabajo_finall.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
 
-                    b.Property<string>("nombre")
-                        .IsRequired()
+                    b.Property<int>("nombre")
                         .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
+                        .HasColumnType("integer");
 
                     b.Property<decimal>("precio")
                         .HasColumnType("numeric");
@@ -43,7 +45,7 @@ namespace trabajo_finall.Migrations
 
                     b.HasKey("id");
 
-                    b.ToTable("Productos");
+                    b.ToTable("productos");
                 });
 
             modelBuilder.Entity("trabajo_finall.Models.Venta", b =>
@@ -63,7 +65,7 @@ namespace trabajo_finall.Migrations
 
                     b.HasKey("id");
 
-                    b.ToTable("Ventas");
+                    b.ToTable("ventas");
                 });
 #pragma warning restore 612, 618
         }
