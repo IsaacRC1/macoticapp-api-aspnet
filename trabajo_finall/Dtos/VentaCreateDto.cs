@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace trabajo_finall.Models
+namespace trabajo_finall.Dtos
 {
-    public class Venta
+    public class VentaCreateDto
     {
         [Key]
         public int id { get; set; }

@@ -1,4 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using trabajo_finall.Models;
+using System.Threading.Tasks;
+using trabajo_finall.Dtos;
+using trabajo_finall.Data;
 
 namespace trabajo_finall.Controllers
 {
@@ -6,32 +11,66 @@ namespace trabajo_finall.Controllers
     [Route("ventas")]
     public class VentasController : ControllerBase
     {
-        // POST /ventas/añadir
+        private readonly AppDbContext dbContext;
+
+        public VentasController(AppDbContext dbContext)
+        {
+            this.dbContext = dbContext;
+        }
+
         [HttpPost("añadir")]
-        public IActionResult Añadir()
+        public async Task<IActionResult> Añadir([FromBody] VentaCreateDto dto)
         {
-            return Ok("Venta añadida");
+            var venta = new Venta
+            {
+              fecha = dto.fecha,
+              total = dto.total,
+            };
+
+            dbContext.Ventas.Add(venta);
+            await dbContext.SaveChangesAsync();
+
+            return Ok(venta);
         }
 
-        // PUT /ventas/editar?id=4
-        [HttpPut("editar")]
-        public IActionResult Editar([FromQuery] int id)
-        {
-            return Ok($"Venta {id} editada");
-        }
-
-        // DELETE /ventas/eliminar?id=4
-        [HttpDelete("eliminar")]
-        public IActionResult Eliminar([FromQuery] int id)
-        {
-            return Ok($"Venta {id} eliminada");
-        }
-
-        // GET /ventas/detalles?id=4
         [HttpGet("detalles")]
-        public IActionResult Detalles([FromQuery] int id)
+        public async Task<IActionResult> Detalles(int id)
         {
-            return Ok($"Detalles de la venta {id}");
+            var venta = await dbContext.Ventas.FindAsync(id);
+            if (venta == null)
+                return NotFound($"venta {id} no existe");
+
+            return Ok(venta);
+        }
+
+        [HttpPut("editar")]
+        public async Task<IActionResult> Editar(int id, [FromBody] VentaUpdateDto dto)
+        {
+            var venta = await dbContext.Ventas.FindAsync(id);
+
+            if (venta == null)
+                return NotFound($"venta {id} no existe");
+
+            venta.fecha = dto.fecha;
+            venta.total = dto.total;
+
+            await dbContext.SaveChangesAsync();
+
+            return Ok(venta);
+        }
+
+        [HttpDelete("eliminar")]
+        public async Task<IActionResult> Eliminar(int id)
+        {
+            var venta = await dbContext.Ventas.FindAsync(id);
+
+            if (venta == null)
+                return NotFound($"venta {id} no existe");
+
+            dbContext.Ventas.Remove(venta);
+            await dbContext.SaveChangesAsync();
+
+            return NoContent();
         }
     }
 }
